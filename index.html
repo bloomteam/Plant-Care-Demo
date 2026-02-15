@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloomCatch Intelligence Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .screen {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 16px;
+            margin-top: 24px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 16px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid #667eea;
+        }
+
+        .card.staff-only {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge-purple {
+            background: #e8eaf6;
+            color: #667eea;
+        }
+
+        .badge-orange {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .badge-green {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .snapshot {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .snapshot-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+        }
+
+        .snapshot-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .snapshot-value {
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .info-text {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .staff-badge {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .qr-icon {
+            text-align: center;
+            font-size: 80px;
+            margin: 20px 0;
+        }
+
+        .selection-summary {
+            background: #e8eaf6;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .selection-summary strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HOME SCREEN -->
+        <div id="homeScreen" class="screen active">
+            <h1>🌿 BloomCatch Intelligence</h1>
+            <p class="subtitle">
+                A prototype demonstrating how plant guidance adapts based on region, store context, and user type.
+            </p>
+            <div class="qr-icon">📱</div>
+            <p class="info-text" style="text-align: center; margin-bottom: 24px;">
+                In real use, staff and customers scan plant QR codes to get intelligent, contextualized guidance.
+            </p>
+            <button class="btn-primary" onclick="showScreen('scanScreen')">
+                Simulate Scanning Plant QR Code
+            </button>
+        </div>
+
+        <!-- QR SCAN / CONFIGURATION SCREEN -->
+        <div id="scanScreen" class="screen">
+            <h1>🔍 Scan Configuration</h1>
+            <p class="subtitle">
+                Select parameters to see how plant guidance adapts dynamically.
+            </p>
+
+            <div class="form-group">
+                <label>Plant Species</label>
+                <select id="plantSelect">
+                    <option value="monarda">Monarda didyma (Bee Balm)</option>
+                    <option value="aquilegia">Aquilegia canadensis (Columbine)</option>
+                    <option value="solidago">Solidago caesia (Blue-stemmed Goldenrod)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Region</label>
+                <select id="regionSelect">
+                    <option value="coastal-maine">Coastal Maine</option>
+                    <option value="inland-midwest">Inland Midwest</option>
+                    <option value="southeast-humid">Southeast Humid</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Store Style</label>
+                <select id="storeSelect">
+                    <option value="native-focused">Native-focused Garden Center</option>
+                    <option value="general-retail">General Garden Retail</option>
+                    <option value="landscaping">Landscaping-focused Nursery</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Viewer Type</label>
+                <select id="viewerSelect">
+                    <option value="customer">Customer</option>
+                    <option value="staff">Staff</option>
+                </select>
+            </div>
+
+            <button class="btn-primary" onclick="generateGuidance()">
+                Generate Plant Guidance
+            </button>
+            <button class="btn-secondary" onclick="showScreen('homeScreen')">
+                ← Back
+            </button>
+        </div>
+
+        <!-- OUTPUT SCREEN -->
+        <div id="outputScreen" class="screen">
+            <div id="pinModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); align-items:center; justify-content:center; z-index:9999;">
+              <div style="background:#fff; width:min(420px, 92vw); border-radius:16px; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,.35);">
+                <h3 style="margin:0 0 10px; color:#764ba2;">Staff Access</h3>
+                <p style="margin:0 0 14px; color:#666; line-height:1.5;">Enter Staff PIN to view retail guidance.</p>
+                <input id="pinInput" type="password" inputmode="numeric" placeholder="PIN" style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:10px; font-size:16px;">
+                <div style="display:flex; gap:10px; margin-top:12px;">
+                  <button id="pinCancel" type="button" class="btn-secondary" style="margin:0; flex:1;">Cancel</button>
+                  <button id="pinSubmit" type="button" class="btn-primary" style="margin:0; flex:1;">Unlock</button>
+                </div>
+                <p id="pinError" style="display:none; margin-top:10px; color:#d32f2f; font-weight:600;">Incorrect PIN</p>
+              </div>
+            </div>
+            <div id="outputContent"></div>
+            <button class="btn-secondary" onclick="showScreen('scanScreen')">
+                ← Try Different Configuration
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================================
+        // STATE MANAGEMENT
+        // ============================================================================
+        
+        let staffUnlocked = false;
+        const STAFF_PIN = "0425"; // demo only - in production this would be proper authentication
+        let lastConfig = null; // stores current configuration for viewer switching
+
+        // ============================================================================
+        // DATA INTELLIGENCE LAYERS
+        // In production, this would come from a sophisticated backend system
+        // ============================================================================
+
+        const plantData = {
+            monarda: {
+                commonName: "Bee Balm",
+                scientificName: "Monarda didyma",
+                // LAYER 1: Global Plant Intelligence
+                globalIntel: {
+                    pollinators: "Hummingbirds, butterflies, native bees",
+                    biology: "Spreading perennial via rhizomes, aromatic foliage",
+                    failurePattern: "Powdery mildew in low air circulation",
+                    ecologicalRole: "High-value nectar source for specialist pollinators",
+                    speciesSupported: ["Ruby-throated hummingbird", "Bumblebees", "Swallowtail butterflies"]
+                },
+                // LAYER 2: Regional variations
+                regions: {
+                    "coastal-maine": {
+                        light: "Full sun to part shade",
+                        bloomTime: "July-August",
+                        soilGuidance: "Amend sandy soil with compost; needs consistent moisture",
+                        climate: "Thrives in cool summers, may need afternoon shade if planted near pavement",
+                        seasonalTiming: "Plant spring or early fall; mulch for winter",
+                        pestPressure: "Low mildew pressure due to good air circulation from ocean breezes"
+                    },
+                    "inland-midwest": {
+                        light: "Full sun to part shade",
+                        bloomTime: "June-July",
+                        soilGuidance: "Tolerates clay if drainage improved; drought-tolerant once established",
+                        climate: "Full sun to part shade; benefits from afternoon shade in hot summers",
+                        seasonalTiming: "Plant spring after frost; divide every 3-4 years",
+                        pestPressure: "Moderate mildew risk in humid summers; choose resistant varieties"
+                    },
+                    "southeast-humid": {
+                        light: "Part shade",
+                        bloomTime: "May-June",
+                        soilGuidance: "Needs excellent drainage in heavy clay; raised beds recommended",
+                        climate: "Part shade essential; morning sun only in intense heat",
+                        seasonalTiming: "Plant fall for best establishment; avoid spring planting",
+                        pestPressure: "High mildew pressure; essential to choose resistant cultivars"
+                    }
+                }
+            },
+            aquilegia: {
+                commonName: "Wild Columbine",
+                scientificName: "Aquilegia canadensis",
+                globalIntel: {
+                    pollinators: "Hummingbirds (primary), long-tongued bees",
+                    biology: "Short-lived perennial, self-seeds readily",
+                    failurePattern: "Leaf miners (cosmetic only), doesn't like root disturbance",
+                    ecologicalRole: "Early spring nectar for migrating hummingbirds",
+                    speciesSupported: ["Ruby-throated hummingbird", "Long-tongued bees", "Hawk moths"]
+                },
+                regions: {
+                    "coastal-maine": {
+                        light: "Full sun to part shade",
+                        bloomTime: "May-June",
+                        soilGuidance: "Tolerates rocky, lean soil; excellent drainage essential",
+                        climate: "Full sun to part shade; cool climate ideal",
+                        seasonalTiming: "Plant fall or very early spring; self-seeds if happy",
+                        pestPressure: "Leaf miners common but don't harm plant health"
+                    },
+                    "inland-midwest": {
+                        light: "Part shade",
+                        bloomTime: "April-May",
+                        soilGuidance: "Average to lean soil; too much fertility reduces flowering",
+                        climate: "Part shade preferred; morning sun ideal",
+                        seasonalTiming: "Plant spring or fall; allow self-seeding for natural colonies",
+                        pestPressure: "Leaf miners present; educate customers this is normal"
+                    },
+                    "southeast-humid": {
+                        light: "Bright shade to part sun",
+                        bloomTime: "March-April",
+                        soilGuidance: "Must have excellent drainage; add grit to heavy soil",
+                        climate: "Bright shade to part sun; protect from afternoon heat",
+                        seasonalTiming: "Fall planting only; may act as annual in extreme heat",
+                        pestPressure: "Leaf miners severe; set customer expectation that foliage gets ratty"
+                    }
+                }
+            },
+            solidago: {
+                commonName: "Blue-stemmed Goldenrod",
+                scientificName: "Solidago caesia",
+                globalIntel: {
+                    pollinators: "Specialist native bees, migrating monarchs, beetles",
+                    biology: "Woodland goldenrod with distinctive blue stems",
+                    failurePattern: "Poor performance in full sun or dry soil",
+                    ecologicalRole: "Critical late-season pollen and nectar for migrating insects",
+                    speciesSupported: ["Monarch butterfly", "Specialist native bees", "Migrating warblers"]
+                },
+                regions: {
+                    "coastal-maine": {
+                        light: "Part shade to full shade",
+                        bloomTime: "September-October",
+                        soilGuidance: "Prefers rich, organic woodland soil; keep moist",
+                        climate: "Part shade to full shade; protected woodland edge ideal",
+                        seasonalTiming: "Plant spring; provides crucial fall color and pollinator food",
+                        pestPressure: "Virtually pest-free; goldenrod does NOT cause allergies (wind-pollinated ragweed does)"
+                    },
+                    "inland-midwest": {
+                        light: "Shade to part shade",
+                        bloomTime: "August-September",
+                        soilGuidance: "Moist woodland conditions; mulch to retain moisture",
+                        climate: "Shade to part shade; one of few goldenrods for shady gardens",
+                        seasonalTiming: "Plant spring or fall; essential for monarch migration timing",
+                        pestPressure: "None significant; correct the 'goldenrod allergy' myth with customers"
+                    },
+                    "southeast-humid": {
+                        light: "Shade required",
+                        bloomTime: "September-October",
+                        soilGuidance: "Rich, moisture-retentive soil; add organic matter",
+                        climate: "Shade required; too much sun causes stress and poor growth",
+                        seasonalTiming: "Fall planting ideal; one of best late bloomers for shade",
+                        pestPressure: "Pest-free; valuable for late-season gardens when little else blooms"
+                    }
+                }
+            }
+        };
+
+        // LAYER 3: Store context affects tone and merchandising
+        const storeContext = {
+            "native-focused": {
+                tone: "ecological",
+                emphasis: "native ecosystem value",
+                customerProfile: "Ecologically motivated, wants to support biodiversity"
+            },
+            "general-retail": {
+                tone: "accessible",
+                emphasis: "easy care and visual appeal",
+                customerProfile: "Broad audience, beginner to intermediate"
+            },
+            "landscaping": {
+                tone: "professional",
+                emphasis: "design performance and maintenance",
+                customerProfile: "Contractors, designers, experienced homeowners"
+            }
+        };
+
+        // ============================================================================
+        // UI LOGIC
+        // ============================================================================
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Delegated click handler for viewer toggle buttons inside outputContent
+        document.getElementById('outputContent').addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-viewer]');
+            if (!btn) return;
+            setViewer(btn.dataset.viewer);
+        });
+
+        function generateGuidance() {
+            const plant = document.getElementById('plantSelect').value;
+            const region = document.getElementById('regionSelect').value;
+            const store = document.getElementById('storeSelect').value;
+            const viewer = document.getElementById('viewerSelect').value;
+
+            // Store configuration for viewer switching
+            lastConfig = { plant, region, store, viewer };
+            
+            renderOutput(lastConfig);
+            showScreen('outputScreen');
+        }
+
+        function openPinModal(onSuccess) {
+            const modal = document.getElementById('pinModal');
+            const input = document.getElementById('pinInput');
+            const err = document.getElementById('pinError');
+            err.style.display = 'none';
+            input.value = '';
+            modal.style.display = 'flex';
+            input.focus();
+            const cleanup = () => {
+                modal.style.display = 'none';
+                document.getElementById('pinSubmit').onclick = null;
+                document.getElementById('pinCancel').onclick = null;
+            };
+            document.getElementById('pinCancel').onclick = () => cleanup();
+            document.getElementById('pinSubmit').onclick = () => {
+                if (input.value === STAFF_PIN) {
+                    staffUnlocked = true;
+                    cleanup();
+                    onSuccess();
+                } else {
+                    err.style.display = 'block';
+                    input.select();
+                }
+            };
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') document.getElementById('pinSubmit').click();
+                if (e.key === 'Escape') cleanup();
+            };
+        }
+
+        function setViewer(viewer) {
+            if (!lastConfig) return;
+            if (viewer === 'staff' && !staffUnlocked) {
+                return openPinModal(() => {
+                    lastConfig.viewer = 'staff';
+                    renderOutput(lastConfig);
+                });
+            }
+            lastConfig.viewer = viewer;
+            renderOutput(lastConfig);
+        }
+        
+        // Make function globally accessible for onclick handlers in dynamic HTML
+        window.setViewer = setViewer;
+
+        function renderOutput(config) {
+            const { plant, region, store, viewer } = config;
+            const data = plantData[plant];
+            const regionalData = data.regions[region];
+            const storeData = storeContext[store];
+
+            // Get human-readable labels
+            const plantLabel = document.getElementById('plantSelect').selectedOptions[0].text;
+            const regionLabel = document.getElementById('regionSelect').selectedOptions[0].text;
+            const storeLabel = document.getElementById('storeSelect').selectedOptions[0].text;
+            const viewerLabel = viewer === 'customer' ? 'Customer View' : 'Staff View';
+
+            // Generate dynamic content
+            let html = `
+                <h1>🌿 ${data.commonName}</h1>
+                <p class="subtitle"><em>${data.scientificName}</em></p>
+
+                <div class="selection-summary">
+                    <strong>Region:</strong> ${regionLabel}<br>
+                    <strong>Store:</strong> ${storeLabel}<br>
+                    <strong>View:</strong> ${viewerLabel}
+                </div>
+
+                <div style="display:flex; gap:8px; margin: 12px 0 20px;">
+                  <button type="button"
+                          class="btn-secondary"
+                          data-viewer="customer"
+                          style="margin:0; ${viewer === 'customer' ? 'background: #667eea; color: white; border-color: #667eea;' : ''}">
+                    👤 Customer View
+                  </button>
+                  <button type="button"
+                          class="btn-secondary"
+                          data-viewer="staff"
+                          style="margin:0; ${viewer === 'staff' ? 'background: #ff9800; color: white; border-color: #ff9800;' : ''}">
+                    👔 Staff View
+                  </button>
+                </div>
+
+                <!-- SECTION 1: Plant Snapshot -->
+                <h2>📊 Plant Snapshot</h2>
+                <div class="snapshot">
+                    <div class="snapshot-item">
+                        <div class="snapshot-label">Bloom Time</div>
+                        <div class="snapshot-value">${regionalData.bloomTime}</div>
+                    </div>
+                    <div class="snapshot-item">
+                        <div class="snapshot-label">Pollinators</div>
+                        <div class="snapshot-value">${data.globalIntel.pollinators.split(',')[0]}</div>
+                    </div>
+                    <div class="snapshot-item">
+                        <div class="snapshot-label">Light</div>
+                        <div class="snapshot-value">${regionalData.light}</div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Species Supported -->
+                <h2>🐦 Species Supported</h2>
+                <div class="card">
+                    ${data.globalIntel.speciesSupported.map(s => `<span class="badge badge-green">${s}</span>`).join('')}
+                    <p class="info-text" style="margin-top:10px;">Local wildlife benefit at a glance — this is the narrative hook customers remember.</p>
+                </div>
+
+                <!-- SECTION 3: Ecological Role (varies by region) -->
+                <h2>🦋 Ecological Role in ${regionLabel}</h2>
+                <div class="card">
+                    <p class="info-text">
+                        ${getEcologicalRole(plant, region, data, regionalData)}
+                    </p>
+                </div>
+
+                <!-- SECTION 4: Regional Intelligence -->
+                <h2>🌍 Regional Growing Intelligence</h2>
+                <div class="card">
+                    <h3>Climate Adaptation</h3>
+                    <p class="info-text">${regionalData.climate}</p>
+                    
+                    <h3>Soil Guidance</h3>
+                    <p class="info-text">${regionalData.soilGuidance}</p>
+                    
+                    <h3>Seasonal Timing</h3>
+                    <p class="info-text">${regionalData.seasonalTiming}</p>
+                    
+                    <h3>Pest & Disease Pressure</h3>
+                    <p class="info-text">${regionalData.pestPressure}</p>
+                </div>
+
+                <!-- SECTION 5: Customer View -->
+                ${viewer === 'customer' ? generateCustomerView(data, regionalData, storeData, plant, region) : ''}
+
+                <!-- SECTION 6: Staff View -->
+                ${viewer === 'staff' ? generateStaffView(data, regionalData, storeData, plant, region) : ''}
+
+                <div style="margin-top: 32px; padding: 20px; background: #e8f5e9; border-radius: 12px; border-left: 4px solid #4caf50;">
+                    <h3 style="color: #2e7d32; margin-bottom: 12px;">💡 System Intelligence Note</h3>
+                    <p style="color: #1b5e20; line-height: 1.6; margin: 0;">
+                        This guidance was <strong>dynamically generated</strong> by combining:
+                        <span class="badge badge-purple">Plant Biology</span>
+                        <span class="badge badge-green">Regional Climate</span>
+                        <span class="badge badge-orange">Store Context</span>
+                        <span class="badge badge-purple">User Type</span>
+                    </p>
+                    <p style="color: #1b5e20; line-height: 1.6; margin-top: 12px;">
+                        The same plant code generates <em>different</em> guidance for a customer in Maine vs. a landscaper in Georgia.
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('outputContent').innerHTML = html;
+        }
+
+        function getEcologicalRole(plant, region, data, regionalData) {
+            // This demonstrates how ecological messaging adapts by region
+            const roles = {
+                monarda: {
+                    "coastal-maine": `In coastal Maine, ${data.commonName} is a vital <span class="highlight">hummingbird magnet during peak migration</span> in mid-summer. Its long bloom period coincides with peak Ruby-throated Hummingbird nesting season.`,
+                    "inland-midwest": `In the Midwest, ${data.commonName} serves as a <span class="highlight">critical nectar corridor plant</span> for migrating monarchs and native bees. Its midsummer bloom fills a gap when spring ephemerals are done and asters haven't started.`,
+                    "southeast-humid": `In the Southeast, ${data.commonName} provides <span class="highlight">early summer nectar</span> when many native plants are heat-stressed. Choose mildew-resistant varieties to keep it looking good through the season.`
+                },
+                aquilegia: {
+                    "coastal-maine": `${data.commonName} is one of the <span class="highlight">first reliable nectar sources</span> for Ruby-throated Hummingbirds arriving from migration. Its early May bloom is perfectly timed for exhausted migrants.`,
+                    "inland-midwest": `This early-season native provides <span class="highlight">essential spring nectar</span> when few other plants are blooming. It's adapted to the freeze-thaw cycles and will naturalize in the right conditions.`,
+                    "southeast-humid": `Blooming as early as March, ${data.commonName} offers <span class="highlight">critical early nectar</span> for migrating hummingbirds passing through. Its ephemeral nature suits the intense heat that follows.`
+                },
+                solidago: {
+                    "coastal-maine": `This woodland goldenrod is <span class="highlight">essential for late-season pollinators</span> preparing for winter. Its September bloom provides critical energy for migrating monarchs and native bees.`,
+                    "inland-midwest": `${data.commonName} is one of the <span class="highlight">most important monarch migration plants</span> in the Midwest. Its August-September bloom perfectly times with peak monarch migration south.`,
+                    "southeast-humid": `As a <span class="highlight">shade-tolerant late bloomer</span>, this goldenrod fills a crucial gap in shady Southern gardens. It supports fall migrants when few other shade plants are flowering.`
+                }
+            };
+            return roles[plant][region];
+        }
+
+        function generateCustomerView(data, regionalData, storeData, plant, region) {
+            return `
+                <h2>🏡 How to Grow This Plant</h2>
+                <div class="card">
+                    <h3>Why This Plant Matters Here</h3>
+                    <p class="info-text">
+                        ${getWhyItMatters(plant, region, storeData)}
+                    </p>
+                    
+                    <h3>Success Tips for Your Garden</h3>
+                    <ul>
+                        ${getSuccessTips(data, regionalData, plant, region)}
+                    </ul>
+                    
+                    <h3>What to Expect</h3>
+                    <p class="info-text">
+                        <strong>Bloom:</strong> ${regionalData.bloomTime}<br>
+                        <strong>Growth habit:</strong> ${data.globalIntel.biology}<br>
+                        <strong>Common concern:</strong> ${getCustomerConcern(data.globalIntel.failurePattern)}
+                    </p>
+                </div>
+            `;
+        }
+
+        function generateStaffView(data, regionalData, storeData, plant, region) {
+            return `
+                <h2>👔 Staff Intelligence <span class="staff-badge">STAFF ONLY</span></h2>
+                
+                <div class="card staff-only">
+                    <h3>💰 Selling Cue</h3>
+                    <p class="info-text">
+                        ${getSellingCue(plant, region, storeData)}
+                    </p>
+                </div>
+
+                <div class="card staff-only">
+                    <h3>🌱 Perfect Pairings</h3>
+                    <p class="info-text">
+                        ${getPairings(plant, region)}
+                    </p>
+                </div>
+
+                <div class="card staff-only">
+                    <h3>⚠️ Common Failure Warning</h3>
+                    <p class="info-text">
+                        <strong>Issue:</strong> ${data.globalIntel.failurePattern}<br>
+                        <strong>Prevention:</strong> ${getFailurePrevention(data.globalIntel.failurePattern, regionalData)}
+                    </p>
+                </div>
+
+                <div class="card staff-only">
+                    <h3>🎯 Ideal Customer Profile</h3>
+                    <p class="info-text">
+                        ${getIdealCustomer(plant, region, storeData)}
+                    </p>
+                </div>
+
+                <!-- CUSTOMER VIEW INCLUDED FOR STAFF -->
+                ${generateCustomerView(data, regionalData, storeData, plant, region)}
+            `;
+        }
+
+        function getWhyItMatters(plant, region, storeData) {
+            const messages = {
+                monarda: {
+                    "coastal-maine": "This native perennial is perfectly adapted to coastal Maine's cool summers and provides critical food for hummingbirds when they're nesting. Unlike many cultivars, it won't suffer from powdery mildew in your ocean breezes.",
+                    "inland-midwest": "A true Midwest native that handles clay soil and summer humidity. It's a butterfly and hummingbird magnet that will spread to fill space, making it perfect for naturalizing.",
+                    "southeast-humid": "While this plant originated further north, mildew-resistant varieties thrive in the Southeast with afternoon shade. It's one of the few hummingbird plants that can handle your humidity."
+                },
+                aquilegia: {
+                    "coastal-maine": "This delicate native is tougher than it looks and thrives in rocky Maine soil. It's the first plant hummingbirds look for when they arrive in spring, exhausted from migration.",
+                    "inland-midwest": "A short-lived perennial that self-seeds to create natural drifts. Let it do its thing in partial shade and you'll have hummingbirds visiting every April.",
+                    "southeast-humid": "This early bloomer needs excellent drainage in the Southeast. Plant it in fall and enjoy March flowers when little else is blooming for early migrating hummingbirds."
+                },
+                solidago: {
+                    "coastal-maine": "This woodland goldenrod brings life to shady spots in fall when most shade plants are done. It's essential food for pollinators preparing for winter.",
+                    "inland-midwest": "One of the most important plants you can grow for monarch butterflies. Its late bloom coincides perfectly with fall migration, providing critical energy for their journey to Mexico.",
+                    "southeast-humid": "A goldenrod that actually wants shade! Perfect for filling that difficult shady spot with September color while feeding late-season pollinators."
+                }
+            };
+            return messages[plant][region];
+        }
+
+        function getSuccessTips(data, regionalData, plant, region) {
+            const tips = {
+                monarda: [
+                    `<li><strong>Sunlight:</strong> ${regionalData.climate}</li>`,
+                    `<li><strong>Soil:</strong> ${regionalData.soilGuidance}</li>`,
+                    `<li><strong>Spacing:</strong> Plant 18-24" apart; it will spread via underground runners</li>`,
+                    `<li><strong>Maintenance:</strong> Deadhead for extended bloom; divide every 3-4 years to prevent overcrowding</li>`
+                ],
+                aquilegia: [
+                    `<li><strong>Sunlight:</strong> ${regionalData.climate}</li>`,
+                    `<li><strong>Soil:</strong> ${regionalData.soilGuidance}</li>`,
+                    `<li><strong>Lifespan:</strong> Short-lived (2-3 years) but self-seeds readily if conditions are right</li>`,
+                    `<li><strong>Leaf miners:</strong> The leaves get tunneled by insects - this is normal and doesn't harm the plant!</li>`
+                ],
+                solidago: [
+                    `<li><strong>Sunlight:</strong> ${regionalData.climate}</li>`,
+                    `<li><strong>Soil:</strong> ${regionalData.soilGuidance}</li>`,
+                    `<li><strong>Myth-busting:</strong> Goldenrod does NOT cause allergies - that's ragweed, which blooms at the same time</li>`,
+                    `<li><strong>Wildlife value:</strong> Leave seed heads standing through winter for birds</li>`
+                ]
+            };
+            return tips[plant].join('');
+        }
+
+        function getCustomerConcern(failurePattern) {
+            const concerns = {
+                "Powdery mildew in low air circulation": "Whitish powder may appear on leaves in crowded plantings - this is cosmetic and won't kill the plant. Choose resistant varieties and ensure good spacing.",
+                "Leaf miners (cosmetic only), doesn't like root disturbance": "Leaf tunneling is normal and cosmetic - the plant is healthy! Once established, don't try to move it.",
+                "Poor performance in full sun or dry soil": "This is a woodland plant - it needs shade and moisture to thrive. Full sun will stress it out."
+            };
+            return concerns[failurePattern] || failurePattern;
+        }
+
+        function getSellingCue(plant, region, storeData) {
+            const cues = {
+                monarda: "Lead with 'hummingbird magnet' - customers respond to wildlife value. If they mention mildew concerns, immediately offer resistant varieties like 'Jacob Cline' or 'Raspberry Wine'.",
+                aquilegia: "Position as 'early spring magic for hummingbirds.' When they see leaf mining, set expectations upfront: 'The leaves get ratty by midsummer - that's normal. You're growing it for the spring show.'",
+                solidago: "Address the allergy myth immediately: 'People think goldenrod causes allergies, but it's actually ragweed. This is insect-pollinated and essential for monarchs.' Instant credibility."
+            };
+            return cues[plant];
+        }
+
+        function getPairings(plant, region) {
+            const pairings = {
+                monarda: {
+                    "coastal-maine": "Pair with Phlox paniculata (garden phlox) for continuous hummingbird action, or Nepeta (catmint) for contrasting blue spikes.",
+                    "inland-midwest": "Excellent with Echinacea purpurea (purple coneflower) and Rudbeckia fulgida (black-eyed Susan) for a classic prairie-style planting.",
+                    "southeast-humid": "Combine with Coreopsis verticillata (threadleaf coreopsis) and Amsonia hubrichtii for a heat-tolerant, disease-resistant trio."
+                },
+                aquilegia: {
+                    "coastal-maine": "Plant with ferns (Athyrium) and wild ginger (Asarum) for a woodland edge vignette.",
+                    "inland-midwest": "Lovely with Phlox divaricata (woodland phlox) and Mertensia virginica (Virginia bluebells) for spring succession.",
+                    "southeast-humid": "Pair with Tiarella (foam flower) and Heuchera (coral bells) for a shade garden with year-round interest."
+                },
+                solidago: {
+                    "coastal-maine": "Perfect with Symphyotrichum novae-angliae (New England aster) for a spectacular fall finale.",
+                    "inland-midwest": "Essential companion to Aster oblongifolius (aromatic aster) for monarch migration support.",
+                    "southeast-humid": "Combine with Eurybia divaricata (white wood aster) for a shade garden that actually blooms in fall."
+                }
+            };
+            return pairings[plant][region];
+        }
+
+        function getFailurePrevention(failurePattern, regionalData) {
+            const prevention = {
+                "Powdery mildew in low air circulation": `Space plants properly (18-24" apart) and ensure good air flow. In high-humidity regions, choose resistant cultivars. ${regionalData.pestPressure}`,
+                "Leaf miners (cosmetic only), doesn't like root disturbance": "Set customer expectations that leaf mining is normal. Plant once in the right spot and don't move it. The plant will self-seed if happy.",
+                "Poor performance in full sun or dry soil": `This is a shade plant that needs consistent moisture. ${regionalData.climate} Full sun will bleach the foliage and reduce flowering.`
+            };
+            return prevention[failurePattern] || `Monitor for: ${failurePattern}. ${regionalData.pestPressure}`;
+        }
+
+        function getIdealCustomer(plant, region, storeData) {
+            const profiles = {
+                monarda: {
+                    "native-focused": "Pollinator garden enthusiasts, especially those focused on hummingbirds. Also appeals to anyone creating a native perennial border.",
+                    "general-retail": "Beginners who want easy, colorful perennials that attract wildlife. Low-maintenance gardeners who like plants that spread and fill space.",
+                    "landscaping": "Professional landscapers creating pollinator-friendly designs. Good for commercial properties wanting summer color with ecological credentials."
+                },
+                aquilegia: {
+                    "native-focused": "Woodland garden creators and native plant purists. Anyone designing for early-season pollinators.",
+                    "general-retail": "Shade gardeners looking for spring interest. Customers who appreciate delicate, cottage-garden aesthetics.",
+                    "landscaping": "Designers working on naturalized edges or woodland settings. Not for high-maintenance clients - this plant does its own thing."
+                },
+                solidago: {
+                    "native-focused": "Serious pollinator advocates, especially those supporting monarch migration. Ideal for ecological restoration projects.",
+                    "general-retail": "Shade gardeners frustrated by lack of fall bloomers. Customers who appreciate plants that support wildlife.",
+                    "landscaping": "Perfect for designers who need late-season interest in shade. Great for commercial properties wanting low-maintenance fall color."
+                }
+            };
+            return profiles[plant][storeData.tone === 'ecological' ? 'native-focused' : storeData.tone === 'professional' ? 'landscaping' : 'general-retail'];
+        }
+
+    </script>
+</body>
+</html>
